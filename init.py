@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # REMOVE FROM DATA INITIAL INFORMATION. ONLY SIGNAL DATA
 
+import sys
 import cupy
 from tubes import Each
 import matplotlib.pyplot as plt
@@ -24,9 +25,9 @@ def load_data(file):
     global signal
     print('Loading data...')
     f = file
-    a = Each([f]).read_files().split().skip_if(lambda x: \
+    tmp = Each([f]).read_files().split().skip_if(lambda x: \
             x.len().equals(0)).to(int)
-    b = a.ndarray(estimated_rows=150_000_000)
+    signal = tmp.ndarray(estimated_rows=150_000_000)
     print('Data have been loaded successfully')
 
 
@@ -46,7 +47,7 @@ def analyze_data():
     global window_position, window_step, signal, min_level_treshold, \
         max_level_treshold
     end = 0
-    steps = len(signal) // window_step + 1
+    steps = (len(signal) // window_step) + 1
     for _ in range(steps):
         peaks = np.where((signal[window_position:window_position
                          + window_step] > max_level_treshold)
@@ -61,9 +62,7 @@ def analyze_data():
 
 def filter_peaks(peaks):
     global peak_minimal_distance
-
     # Remove peaks which are not at a sufficient distance
-
     if len(peaks) < 2:  # If there is only one peak return it
         return peaks
     result = [peaks[0]]
@@ -74,20 +73,20 @@ def filter_peaks(peaks):
 
 
 def get_start_and_end_for_peak(peak_position):
-    global peak_minimal_distance
+    global peak_minimal_distance, signal
     start = 0
     if peak_position > peak_minimal_distance:
         start = 1
         nS = 0
         while nS != peak_minimal_distance:
-            if min_level_treshold <= b[peak_position - start] \
+            if min_level_treshold <= signal[peak_position - start] \
                 <= max_level_treshold:
                 nS += 1
             start += 1
     end = 1
     nE = 0
     while nE != peak_minimal_distance:
-        if min_level_treshold <= b[peak_position + end] \
+        if min_level_treshold <= signal[peak_position + end] \
             <= max_level_treshold:
             nE += 1
         end += 1
@@ -135,11 +134,14 @@ def analyze_peak(peak_position):
 
 
 def init():
-    load_data()
+    load_data(sys.argv[0])
     set_tresholds()
     set_start_point()
     analyze_data()
 
 
-init()
-
+if __name__ == "__main__":
+    if (len(sys.argv) == 0):
+        print("Missing file name!")
+    else:
+        init()
