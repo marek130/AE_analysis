@@ -1,16 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# REMOVE FROM DATA INITIAL INFORMATION. ONLY SIGNAL DATA
 
 import sys
 import cupy
 from tubes import Each
 import matplotlib.pyplot as plt
 import numpy as np
-from joblib import dump, load
 from datetime import datetime
-from constant import window_length_for_calibration, window_position, \
-    window_step, min_level_treshold, minimal_distance, \
+from constants import window_length_for_calibration, window_position, \
+    window_step, min_level_treshold, peak_minimal_distance, \
     max_level_treshold, matrix_shape, matrix_treshold_probability, \
     matrix_bottom_freq_location, matrix_top_freq_location, \
     fibre_treshold_probability, fibre_bottom_freq_location, \
@@ -23,7 +21,7 @@ matrix_hits = []
 
 def load_data(file):
     global signal
-    print('Loading data...')
+    print('Loading data from file: ' + file)
     f = file
     tmp = Each([f]).read_files().split().skip(comments_in_header_number_of_lines).skip_if(lambda x: \
             x.len().equals(0)).to(int)
@@ -49,7 +47,7 @@ def analyze_data():
     end = 0
     steps = (len(signal) // window_step) + 1
     for chunk in range(steps):
-        print("Analyzing " + str(chunk) + " from " + str(steps))
+        print("Analyzing " + str(chunk) + " chunk from " + str(steps - 1))
         peaks = np.where((signal[window_position:window_position
                          + window_step] > max_level_treshold)
                          | (signal[window_position:window_position
@@ -149,20 +147,20 @@ def make_graphs(file_name):
     plt.figure()
     plt.plot(matrix_hits, cummulative_counter_matrix)
     plt.plot(fibres_hits, cummulative_counter_fibres)
-    plt.savefig(file_name + str(datetime.now()) + ".png")
+    plt.savefig(file_name + "-" + str(datetime.now()) + ".png")
     plt.close()
     print("Graph created")
 
 def init():
-    load_data(sys.argv[0])
+    load_data(sys.argv[1])
     set_tresholds()
     set_start_point()
     analyze_data()
-    make_graphs(sys.argv[0])
+    make_graphs(sys.argv[1])
 
 
 if __name__ == "__main__":
-    if (len(sys.argv) == 0):
+    if (len(sys.argv) < 2):
         print("Missing file name!")
     else:
         init()
