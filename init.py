@@ -8,13 +8,13 @@ from tubes import Each
 import matplotlib.pyplot as plt
 import numpy as np
 from joblib import dump, load
-import time
+from datetime import datetime
 from constant import window_length_for_calibration, window_position, \
     window_step, min_level_treshold, minimal_distance, \
     max_level_treshold, matrix_shape, matrix_treshold_probability, \
     matrix_bottom_freq_location, matrix_top_freq_location, \
     fibre_treshold_probability, fibre_bottom_freq_location, \
-    fibre_top_freq_location, peak_minimal_distance, sample_rate
+    fibre_top_freq_location, peak_minimal_distance, sample_rate, comments_in_header_number_of_lines
 
 signal = []
 fibres_hits = []
@@ -25,7 +25,7 @@ def load_data(file):
     global signal
     print('Loading data...')
     f = file
-    tmp = Each([f]).read_files().split().skip_if(lambda x: \
+    tmp = Each([f]).read_files().split().skip(comments_in_header_number_of_lines).skip_if(lambda x: \
             x.len().equals(0)).to(int)
     signal = tmp.ndarray(estimated_rows=150_000_000)
     print('Data have been loaded successfully')
@@ -48,7 +48,8 @@ def analyze_data():
         max_level_treshold
     end = 0
     steps = (len(signal) // window_step) + 1
-    for _ in range(steps):
+    for chunk in range(steps):
+        print("Analyzing " + str(chunk) + " from " + str(steps))
         peaks = np.where((signal[window_position:window_position
                          + window_step] > max_level_treshold)
                          | (signal[window_position:window_position
@@ -133,11 +134,31 @@ def analyze_peak(peak_position):
     return end + window_position + peak_position
 
 
+def make_graphs(file_name):
+    global matrix_hits, fibres_hits
+    print("Creating final graph")
+    cummulative_counter_matrix = []
+    cummulative_counter_fibres = []
+    
+    for i,v in enumerate(matrix_hits):
+        cummulative_counter_matrix.append(i + 1)
+
+    for i,v in enumerate(fibres_hits):
+        cummulative_counter_fibres.append(i + 1)
+
+    plt.figure()
+    plt.plot(matrix_hits, cummulative_counter_matrix)
+    plt.plot(fibres_hits, cummulative_counter_fibres)
+    plt.savefig(file_name + str(datetime.now()) + ".png")
+    plt.close()
+    print("Graph created")
+
 def init():
     load_data(sys.argv[0])
     set_tresholds()
     set_start_point()
     analyze_data()
+    make_graphs(sys.argv[0])
 
 
 if __name__ == "__main__":

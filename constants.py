@@ -12,3 +12,4 @@ fibre_bottom_freq_location = 50000
 fibre_top_freq_location = 75000
 matrix_bottom_freq_location = 200000
 matrix_top_freq_location = 400000
+comments_in_header_number_of_lines = 9
