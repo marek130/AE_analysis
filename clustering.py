@@ -1,13 +1,52 @@
 from joblib import dump
-from init import load_data, normalize_freqs, get_start_and_end_for_peak, filter_peaks
-from sklearn.cluster import Kmeans
-from constants import window_length_for_calibration, min_level_treshold, max_level_treshold, clustering_window, number_of_clusters, sample_rate
+from init import normalize_freqs
+from sklearn.cluster import KMeans
+from constants import window_length_for_calibration, min_level_treshold, max_level_treshold, clustering_window, number_of_clusters, sample_rate, peak_minimal_distance, max_level_treshold, min_level_treshold
 import cupy
 import numpy as np
 import matplotlib.pyplot as plt
 
 signal = []
 clusters = None
+
+
+def set_tresholds():
+    global signal, window_length_for_calibration, min_level_treshold, \
+        max_level_treshold
+    min_level_treshold = np.min(signal[:window_length_for_calibration])
+    max_level_treshold = np.max(signal[:window_length_for_calibration])
+
+def filter_peaks(peaks):
+    global peak_minimal_distance
+    # Remove peaks which are not at a sufficient distance
+    if len(peaks) < 2:  # If there is only one peak return it
+        return peaks
+    result = [peaks[0]]
+    for i in range(1, len(peaks)):
+        if np.abs(result[-1] - peaks[i]) > peak_minimal_distance:  # Two peaks need to have minimal_distance
+            result.append(peaks[i])
+    return result
+
+
+def get_start_and_end_for_peak(peak_position):
+    global peak_minimal_distance, signal
+    start = 0
+    if peak_position > peak_minimal_distance:
+        start = 1
+        nS = 0
+        while nS != peak_minimal_distance:
+            if min_level_treshold <= signal[peak_position - start] \
+                <= max_level_treshold:
+                nS += 1
+            start += 1
+    end = 1
+    nE = 0
+    while nE != peak_minimal_distance:
+        if min_level_treshold <= signal[peak_position + end] \
+            <= max_level_treshold:
+            nE += 1
+        end += 1
+    return (start, end)
 
 def find_clusters():
 	global signal, clusters
@@ -39,6 +78,7 @@ def save_clusters(file_name):
 
 def init():
     load_data(sys.argv[1])
+    set_tresholds()
     find_clusters()
     save_clusters(sys.argv[1])
 
