@@ -1,13 +1,24 @@
 from joblib import dump
 from init import normalize_freqs
+from tubes import Each
 from sklearn.cluster import KMeans
-from constants import window_length_for_calibration, min_level_treshold, max_level_treshold, clustering_window, number_of_clusters, sample_rate, peak_minimal_distance, max_level_treshold, min_level_treshold
+from constants import window_length_for_calibration, min_level_treshold, max_level_treshold, clustering_window, number_of_clusters, sample_rate, peak_minimal_distance, max_level_treshold, min_level_treshold, comments_in_header_number_of_lines
 import cupy
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
 signal = []
 clusters = None
+
+def load_data(file):
+    global signal
+    print('Loading data from file: ' + file)
+    f = file
+    tmp = Each([f]).read_files().split().skip(comments_in_header_number_of_lines).skip_if(lambda x: \
+            x.len().equals(0)).to(int)
+    signal = tmp.ndarray(estimated_rows=150_000_000)
+    print('Data have been loaded successfully')
 
 
 def set_tresholds():
@@ -70,9 +81,9 @@ def analyze_peak(p):
 def save_clusters(file_name):
         global clusters
         for i in range(number_of_clusters):
-                dump(clusters[i], file_name + '-cluster' + str(i))
+                dump(clusters.cluster_centers_[i], file_name + '-cluster' + str(i))
                 plt.figure()
-                plt.plot(clusters[i])
+                plt.plot(clusters.cluster_centers_[i])
                 plt.savefig(file_name + '-cluster' + str(i) + '.png')
                 plt.close()
 
