@@ -1,6 +1,6 @@
 from joblib import load
 
-matrix_shape = load('matrix_shape')
+matrix_shape = load('matrix_shape_mscpyr')
 window_position = 0
 window_step = 10_000_000
 window_length_for_calibration = 4_000_000
