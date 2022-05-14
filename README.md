@@ -21,6 +21,7 @@
 - knižnica matplotlib
 - knižnica pytubes (https://github.com/stestagg/pytubes)
 - knižnica joblib
+- knižnica sklearn
 
 # Popisy jednotlivých súborov
  ---
