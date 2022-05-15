@@ -6,8 +6,8 @@
  * constants.py
  * matrix\_shape_mscpyr
  * README.md
- * MATRICA_MSCpyr
- * VLAKNA_KV13
+ * frekvecne_udalosti_MATRICA_MSCpyr
+ * frekvecne_udalosti_VLAKNA_KV13
  
 # Všetky skripty boli testované na stroji s:
 * Debian 10
