@@ -1,6 +1,6 @@
 # Praktická časť k diplomovej práci: Aplikácia techník umelej inteligencie pri analýze akustických emisií mechanicky namáhaných materiálov
  
- Repozitár obsahuje 7 súborov:
+ Repozitár obsahuje 6 súborov:
  * init.py
  * clustering.py
  * constants.py
@@ -24,7 +24,6 @@
 
 # Popisy jednotlivých súborov
  ---
-## Skripty na transformáciu pravidiel do grafovych modelov
 ### `INIT.PY`
 - skript na analýzu mechanických testov
 - skript berie ako argument cestu k súboru s dátami
@@ -39,11 +38,13 @@
 - počet klastrových skupín sa dá upraviť prepísaním konštanty **number_of_clusters** v súbore constants.py
 - príklad spustenia: ```python3.7 clustering.py data_mscpyr.dat```
 
-
-
 ### `CONSTANTS.PY`
 - súbor predstavujúci definovanie konštánt pre analýzu a klastrovanie
 
 ### `matrix_shape_mscpyr`
 - zovšeobecnený frekvečný tvar pre MSCpyr matricu
+
+### frekvecne_udalosti_MATRICA_MSCpyr_a_VLAKNA_KV13
+- složka obsahujúca obrázky udalostí, ktoré skript označil ako udalosť prasknutia matrice alebo prasknutie vlákna
+- udalosti sú zobrazené vo frekvečnej doméne
  
