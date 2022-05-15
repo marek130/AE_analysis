@@ -27,16 +27,18 @@
  ---
 ## Skripty na transformáciu pravidiel do grafovych modelov
 ### `INIT.PY`
-- skript na analyzu mechanických testov
-- skript berie ako argument cestu k súboru so signálom
+- skript na analýzu mechanických testov
+- skript berie ako argument cestu k súboru s dátami
 - výsledkom je kumulatívny graf
 - názov súboru reprezentujúci frekvenčný tvar matrice sa dá upraviť prepísaním konštanty **matrix_shape** v súbore constants.py
+- príklad spustenie: ```python3.7 init.py data_mscpyr.dat```
 
 ### `CLUSTERING.PY`
 - skript na získanie frekvenčnej stopy zo signálu
-- skript berie 1 argument a to cestu k súboru so signálom
+- skript berie 1 argument a to cestu k súboru s dátami
 - výsledkom sú súbory reprezentujúce frekvečné stopy a obrázky na zobrazenie frekvečnej stopy
 - počet klastrových skupín sa dá upraviť prepísaním konštanty **number_of_clusters** v súbore constants.py
+- - príklad spustenie: ```python3.7 clustering.py data_mscpyr.dat```
 
 
 
