@@ -46,6 +46,6 @@
 
 ### frekvecne_udalosti_MATRICA_MSCpyr_a_VLAKNA_KV13
 - složka obsahujúca obrázky udalostí, ktoré skript označil ako udalosť prasknutia matrice alebo prasknutie vlákna
-- udalosti sú zobrazené vo frekvečnej doméne
+- udalostí sú zobrazené vo frekvečnej doméne
 - jedná sa o ukážku udalostí z ťahového testu pre materiál MSCpyr s vláknami KV13
  
